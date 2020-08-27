@@ -2,6 +2,11 @@ from elasticsearch import Elasticsearch
 import json 
 from wikidata.config_path import WIKIPEDIA_CHUNKS_FILE
 
+"""
+Build an elastic search index for the wikipedia documents from WIKIPEDIA_CHUNKS_FILE (psgs_w100.tsv). 
+Each elastic search entry has the wikipedia document i.e. title, list of 100word document chunks and the id (from psgs_w100.tsv) of the first and last document chunk
+"""
+
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 #DATA_DIR = '/export/share/amrita/efficientQA/'
 #DPR_WIKIDATA_DIR = DATA_DIR+'/data/wikipedia_split'

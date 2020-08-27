@@ -2,6 +2,9 @@ from elasticsearch import Elasticsearch
 import json 
 from wikidata.config_path import WIKIDATA5M_ENTITIES_FILE
 
+"""
+Build elastic search index of the entity id and entity synonyms of the wikidata5m
+"""
 #DATA_DIR = '/export/share/amrita/efficientQA/'
 #WIKIDATA5M_DIR = DATA_DIR+'/wikidata/wikidata5m'
 #WIKIDATA5M_ENTITIES_FILE = WIKIDATA5M_DIR+'/wikidata5m_entity.txt'
@@ -46,6 +49,7 @@ indexsetting = {
 
 
 def build_elastic_search_entity_index():
+
   es.indices.create(index='wikidata5m_entities', body=indexsetting, ignore=400)
 
   count = 0

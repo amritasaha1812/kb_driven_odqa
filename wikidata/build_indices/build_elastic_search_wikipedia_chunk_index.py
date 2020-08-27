@@ -1,5 +1,9 @@
 from elasticsearch import Elasticsearch 
 import json 
+
+"""
+Build an elastic search index mapping the id of the document chunks in the WIKIPEDIA_CHUNKS_FILE (psgs_100w.tsv file) to the wikipedia document and the chunk id within that document. 
+"""
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 
 count = 0

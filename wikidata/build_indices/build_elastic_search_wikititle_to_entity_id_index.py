@@ -3,6 +3,11 @@ import os
 import json 
 from wikidata.config_path import WIKIDATA5M_DOCTITLE_ENTITY_DIR
 
+"""
+Build elastic search index of the wikipedia titles corresponding to the titles in WIKIPEDIA_CHUNKS_FILE (psgs_100w.tsv) to the wikidata entities. 
+Some of these wikidata entities may not be in wikidata5m. 
+"""
+
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 
 #DATA_DIR = '/export/share/amrita/efficientQA/'
