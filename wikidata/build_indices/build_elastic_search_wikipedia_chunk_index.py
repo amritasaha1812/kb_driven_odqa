@@ -26,6 +26,6 @@ def build_elastic_search_wikipedia_chunk_index():
 
 if __name__=="__main__":
     
-    # USAGE: python -m wikidata.build_elastic_search_wikipedia_chunk_index
+    # USAGE: python -m wikidata.build_indices.build_elastic_search_wikipedia_chunk_index
 
     build_elastic_search_wikipedia_chunk_index()
