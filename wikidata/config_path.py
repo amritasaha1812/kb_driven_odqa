@@ -1,16 +1,16 @@
 #change this to the location which contains the below files
-DATA_DIR = '/export/share/amrita/efficientQA/'  
+DATA_DIR = '/Users/meghthakkar/Desktop/Acads/RA/KGs/retrieval-based-baselines'  
 
 #download wikidata5m and extract here 
-WIKIDATA5M_DIR = DATA_DIR+'/wikidata/wikidata5m' 
-WIKIDATA5M_ENTITIES_FILE = WIKIDATA5M_DIR+'/wikidata5m_entity.txt'  
+WIKIDATA5M_DIR = DATA_DIR+'/wikidata5m'
+WIKIDATA5M_ENTITIES_FILE = WIKIDATA5M_DIR+'/wikidata5m_alias/wikidata5m_entity.txt'  
 
 #download wikidata5m_doctitle_entity.zip from https://drive.google.com/file/d/1T2So_lvbueJhip3YuVRv503VZvtp2tl4/view?usp=sharing and extract here 
 WIKIDATA5M_DOCTITLE_ENTITY_DIR = WIKIDATA5M_DIR+'/wikidata5m_doctitle_entity'   
 
-DPR_WIKIDATA_DIR = DATA_DIR+'/data/wikipedia_split'
-DPR_TRAIN_DATA = DATA_DIR+'/data/retriever/nq-train.json'
-DPR_DEV_DATA = DATA_DIR+'data/retriever/nq-dev.json'
+DPR_WIKIDATA_DIR = DATA_DIR+'/data/data/wikipedia_split'
+DPR_TRAIN_DATA = DATA_DIR+'/data/data/retriever/nq-train.json'
+DPR_DEV_DATA = DATA_DIR+'/data/data/retriever/nq-dev.json'
 WIKIPEDIA_CHUNKS_FILE = DPR_WIKIDATA_DIR+'/psgs_w100.tsv'
 
 #change this to the location which contains the following db

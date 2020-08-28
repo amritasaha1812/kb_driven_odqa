@@ -2,3 +2,5 @@ obsolete
 obsolete/*
 output
 output/*
+*.pyc
+__pycache__/

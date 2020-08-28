@@ -17,7 +17,8 @@ es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 def build_elastic_search_wikipedia_index():
     last_title = None
     docs = []
-    last_id = 0
+    # last_id = 0
+    last_id = 1
     count = 0
     for line in open(WIKIPEDIA_CHUNKS_FILE).readlines():
         line = line.strip().split('\t')

@@ -35,7 +35,7 @@ def build_elastic_search_wikititle_to_entity_id_index():
     not_found_in_wikiapi = 0
     count = 0
     for f in os.listdir(WIKIDATA5M_DOCTITLE_ENTITY_DIR):
-        f = dir+'/'+f
+        f = WIKIDATA5M_DOCTITLE_ENTITY_DIR +'/'+ f
         data = json.load(open(f))
         for k,val in data.items():
             title = val['title']
