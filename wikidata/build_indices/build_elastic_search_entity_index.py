@@ -1,5 +1,6 @@
 from elasticsearch import Elasticsearch 
 import json 
+import sys
 from wikidata.config_path import WIKIDATA5M_ENTITIES_FILE
 
 """
@@ -48,13 +49,13 @@ indexsetting = {
 }
 
 
-def build_elastic_search_entity_index():
+def build_elastic_search_entity_index(start_index=0, start_doc_id=0):
 
   es.indices.create(index='wikidata5m_entities', body=indexsetting, ignore=400)
 
-  count = 0
-  
-  for line in open(WIKIDATA5M_ENTITIES_FILE).readlines():
+  count = start_doc_id
+  lines = open(WIKIDATA5M_ENTITIES_FILE).readlines()[start_index:]
+  for line in lines:
       line = line.strip().split('\t')
       entity_id = line[0]
       entity_synonyms = line[1:]
@@ -68,9 +69,11 @@ def build_elastic_search_entity_index():
 
 if __name__=="__main__":
   
-  # USAGE: python -m wikidata.build_indices.build_elastic_search_entity_index
-
-  build_elastic_search_entity_index()
+  # USAGE: python -m wikidata.build_indices.build_elastic_search_entity_index start_index
+  start_index = 1294384
+  #start_index = int(sys.argv[1])
+  start_doc_id = start_index
+  build_elastic_search_entity_index(start_index, start_doc_id)
 
 
 

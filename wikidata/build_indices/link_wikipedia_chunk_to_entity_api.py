@@ -4,7 +4,8 @@ import urllib.parse
 from elasticsearch import Elasticsearch 
 import os 
 import sys 
-from wikidata.config_path import HYPERLINKED_WIKIPEDIA_DB
+import pickledb 
+from wikidata.config_path import HYPERLINKED_WIKIPEDIA_DB, HYPERLINKED_WIKIPEDIA_DB_TITLE_TO_ROW_MAP
 #HYPERLINKED_WIKIPEDIA_DIR = '/export/share/k.hashimoto/nq_project/nq_models/wiki_db/'
 #HYPERLINKED_WIKIPEDIA_DB = HYPERLINKED_WIKIPEDIA_DIR+'/wiki_20181220_nq_hyper_linked.db'
 
@@ -15,11 +16,28 @@ wiki_index = "wikipedia_to_entity_id"
 con = sqlite3.connect(HYPERLINKED_WIKIPEDIA_DB)
 cursor = con.cursor()
 
-def link_wikipedia_chunk_to_entity(start_index, end_index):
-    num_docs = end_index - start_index
-    cursor.execute("select * from documents limit "+str(num_docs)+" offset "+str(start_index))
-    count = 0
+wikidb_title_to_row_map = None
+if os.path.exists(HYPERLINKED_WIKIPEDIA_DB_TITLE_TO_ROW_MAP):
+    wikidb_title_to_row_map = pickledb.load(HYPERLINKED_WIKIPEDIA_DB_TITLE_TO_ROW_MAP, False)
 
+
+def dump_db_rowid_to_doctitle_mapping():
+    wikidb_title_to_row_map = pickledb.load(HYPERLINKED_WIKIPEDIA_DB_TITLE_TO_ROW_MAP, False)
+    cursor.execute("select * from documents")
+    count = 0
+    for data in cursor:
+        title = data[-1]
+        wikidb_title_to_row_map.set(title, count)
+        count += 1
+    wikidb_title_to_row_map.dump()
+
+def link_wikipedia_chunk_to_entity_api(title=None):
+    if wikidb_title_to_row_map is None:
+        dump_db_rowid_to_doctitle_mapping()
+    if title is None:
+        return None
+    row_id = wikidb_title_to_row_map.get(title)
+    cursor.execute("select * from documents LIMIT 1 OFFSET "+str(row_id))
     for data in cursor:
         data_id = data[0]
         data_text = data[1]
@@ -43,31 +61,20 @@ def link_wikipedia_chunk_to_entity(start_index, end_index):
             ent_name = m.group()
             document_chunk_id = int(start_word_index/100)
             ent_name_processed = urllib.parse.unquote(ent_name.replace('<a href="','').replace('">',''))
-            '''d = es.search(index=wiki_index, body={"query":{"match":{"title":ent_name_processed}}})
+            d = es.search(index=wiki_index, body={"query":{"match":{"title":ent_name_processed}}})
             ent_ids = []
             for h in d['hits']['hits']:
                 h = h['_source']
                 if h['title'].lower()==ent_name_processed.lower():
                     ent_ids.extend([di['wikibase_item'] for di in h['wiki_info'] if di['wikibase_item']!='NONE'])
-                
-            document_chunk_start_index = start_word_index % 100'''
             if document_chunk_id not in linked_entities:
                 linked_entities[document_chunk_id] = []
-            linked_entities[document_chunk_id].append(ent_name_processed)#{"entity_ids":ent_ids, "chunk_start_word_index": document_chunk_start_index, "global_start_word_index": start_word_index, "global_start_index":start_index})
-        ds = []
-        for k,v in linked_entities.items():
-            d={"document_chunk_id": k, "linked_entities": v}
-            ds.append(d)
-        final_data = {'title': data_title, 'linked_data':ds}
-        es.index(index='wikipedia_to_entity', doc_type='wikipedia_to_entity', id=count, body=final_data)
-        count += 1
-        if count % 100==0:
-            print ('finished ', count)
+            linked_entities[document_chunk_id].extend(ent_ids)
+        break
+    return linked_entities    
             
 if __name__=="__main__":
 
-    # USAGE: python -m wikidata.build_indices.link_wikipedia_chunk_to_entity start_index end_index
+    # USAGE: python -m wikidata.build_indices.link_wikipedia_chunk_to_entity_api 
 
-    start_index = int(sys.argv[1])  
-    end_index = int(sys.argv[2])
-    link_wikipedia_chunk_to_entity(start_index, end_index)
+    
